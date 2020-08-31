@@ -1,20 +1,14 @@
 init python:
     menu_trans_time = 1
-    splash_message_default = "This game is not suitable for children\nor those who are easily disturbed."
+
+    splash_message_default = "这是非官方的粉丝 Mod，与 Team Salvato 无关。"
+
     splash_messages = [
-    "You are my sunshine,\nMy only sunshine",
-    "I missed you.",
-    "Play with me",
-    "It's just a game, mostly.",
-    "This game is not suitable for children\nor those who are easily disturbed?",
-    "sdfasdklfgsdfgsgoinrfoenlvbd",
-    "null",
-    "I have granted kids to hell",
-    "PM died for this.",
-    "It was only partially your fault.",
-    "This game is not suitable for children\nor those who are easily dismembered.",
-    "Don't forget to backup Monika's character file."
+        "请多多支持 Dan 鸽www",
+        "Monika 在盯着你的粪代码。（笑）",
+        "Monika 保佑你，开发 Mod 不遇一个 unexpection！"
     ]
+
 
 image splash_warning = ParameterizedText(style="splash_text", xalign=0.5, yalign=0.5)
 
@@ -223,7 +217,7 @@ image menu_nav:
     menu_nav_move
 
 image menu_logo:
-    "gui/logo.png"
+    "/mod_assets/DDLCModTemplateLogoCN.png"
     subpixel True
     xcenter 240
     ycenter 120
@@ -311,6 +305,39 @@ image warning:
 image tos = "bg/warning.png"
 image tos2 = "bg/warning2.png"
 
+init python:
+    if not persistent.do_not_delete:
+
+        import os
+        try:
+            if not os.access(config.basedir + "/characters/", os.F_OK):
+                os.mkdir(config.basedir + "/characters")
+
+            try: renpy.file("../characters/monika.chr")
+            except: open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
+            try: renpy.file("../characters/natsuki.chr")
+            except: open(config.basedir + "/characters/natsuki.chr", "wb").write(renpy.file("natsuki.chr").read())
+            try: renpy.file("../characters/yuri.chr")
+            except: open(config.basedir + "/characters/yuri.chr", "wb").write(renpy.file("yuri.chr").read())
+            try: renpy.file("../characters/sayori.chr")
+            except: open(config.basedir + "/characters/sayori.chr", "wb").write(renpy.file("sayori.chr").read())
+
+# 原脚本
+#            if persistent.playthrough <= 2:
+#                try: renpy.file("../characters/monika.chr")
+#                except: open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
+#            if persistent.playthrough <= 1 or persistent.playthrough == 4:
+#                try: renpy.file("../characters/natsuki.chr")
+#                except: open(config.basedir + "/characters/natsuki.chr", "wb").write(renpy.file("natsuki.chr").read())
+#                try: renpy.file("../characters/yuri.chr")
+#                except: open(config.basedir + "/characters/yuri.chr", "wb").write(renpy.file("yuri.chr").read())
+#            if persistent.playthrough == 0 or persistent.playthrough == 4:
+#                try: renpy.file("../characters/sayori.chr")
+#                except: open(config.basedir + "/characters/sayori.chr", "wb").write(renpy.file("sayori.chr").read())
+
+        except:
+            pass
+
 
 label splashscreen:
 
@@ -339,20 +366,21 @@ label splashscreen:
             with open(config.basedir + "/game/firstrun", "wb") as f:
                 pass
     if not firstrun:
-        if persistent.first_run and (config.version == persistent.oldversion or persistent.autoload == "postcredits_loop"):
+        if persistent.first_run and not persistent.do_not_delete:
             $ quick_menu = False
             scene black
+            "你似乎删除了 firstrun 文件，并且我们发现还有之前的存档。"
             menu:
-                "A previous save file has been found. Would you like to delete your save data and start over?"
-                "Yes, delete my existing data.":
-                    "Deleting save data...{nw}"
+                "是否删除存档并重置游戏？"
+                "是的，删除存档":
+                    "正在删除存档...{nw}"
                     python:
                         delete_all_saves()
                         renpy.loadsave.location.unlink_persistent()
                         renpy.persistent.should_save_persistent = False
                         renpy.utter_restart()
-                "No, continue where I left off.":
-                    $ restore_relevant_characters()
+                "不，继续游戏":
+                    pass
 
         python:
             if not firstrun:
@@ -376,36 +404,21 @@ label splashscreen:
         scene tos
         with Dissolve(1.0)
         pause 1.0
-        "This game is not suitable for children or those who are easily disturbed."
-        "Individuals suffering from anxiety or depression may not have a safe experience playing this game. For content warnings, please visit: http://ddlc.moe/warning.html"
+        "[config.name] 是 Doki Doki Literature Club 的粉丝 Mod，与 Team Salvato 无关。"
+        "本 mod 理应在通关原游戏后再进行游玩，因此本 mod 包含大量剧透。"
+        "要游玩本 mod，需要原版 Doki Doki Literature Club 的文件。您可以在 https://ddlc.moe 或者 Steam 免费获取。"
+
         menu:
-            "By playing Doki Doki Literature Club, you agree that you are at least 13 years of age, and you consent to your exposure of highly disturbing content."
-            "I agree.":
+            "如果继续游玩 [config.name] 将视为你已经通关原游戏，并接受任何剧透内容。"
+            "我同意。":
                 pass
+            "我不同意，退出。":
+                $ renpy.quit()
         $ persistent.first_run = True
         scene tos2
         with Dissolve(1.5)
         pause 1.0
         scene white
-
-
-    python:
-        s_kill_early = None
-        if persistent.playthrough == 0:
-            try: renpy.file("../characters/sayori.chr")
-            except: s_kill_early = True
-        if not s_kill_early:
-            if persistent.playthrough <= 2 and persistent.playthrough != 0:
-                try: renpy.file("../characters/monika.chr")
-                except: open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-            if persistent.playthrough <= 1 or persistent.playthrough == 4:
-                try: renpy.file("../characters/natsuki.chr")
-                except: open(config.basedir + "/characters/natsuki.chr", "wb").write(renpy.file("natsuki.chr").read())
-                try: renpy.file("../characters/yuri.chr")
-                except: open(config.basedir + "/characters/yuri.chr", "wb").write(renpy.file("yuri.chr").read())
-            if persistent.playthrough == 4:
-                try: renpy.file("../characters/sayori.chr")
-                except: open(config.basedir + "/characters/sayori.chr", "wb").write(renpy.file("sayori.chr").read())
 
     if not persistent.special_poems:
         python hide:
@@ -542,22 +555,18 @@ label after_load:
             $ persistent.yuri_kill = 200
         jump expression persistent.autoload
 
-    elif anticheat != persistent.anticheat:
+    if anticheat != persistent.anticheat:
         stop music
         scene black
-        "The save file could not be loaded."
-        "Are you trying to cheat?"
-        $ m_name = "Monika"
-        show monika 1 at t11
+        "存档无法加载。"
+        "您是不是想作弊？XD"
+        show monika 1a at t11 zorder 1
         if persistent.playername == "":
-            m "You're so funny."
+            m "您真可笑。"
         else:
-            m "You're so funny, [persistent.playername]."
+            m "[persistent.playername]，您真可笑。"
+
         $ renpy.utter_restart()
-    else:
-        if persistent.playthrough == 0 and not persistent.first_load and not config.developer:
-            $ persistent.first_load = True
-            call screen dialog("Hint: You can use the \"Skip\" button to\nfast-forward through text you've already read.", ok_action=Return())
     return
 
 
@@ -615,12 +624,6 @@ label before_main_menu:
     return
 
 label quit:
-    if persistent.ghost_menu:
-        hide screen main_menu
-        scene white
-        show expression "gui/menu_art_m_ghost.png":
-            xpos -100 ypos -100 zoom 3.5
-        pause 0.01
     return
 
 label readonly:

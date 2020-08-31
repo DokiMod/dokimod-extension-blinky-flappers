@@ -4,4 +4,4 @@
 
 DokiMod 插件移植：imgradeone
 
-版本：v2.2.2_dokimod1_alpha
+版本：v2.2.2_dokimod_alpha1
