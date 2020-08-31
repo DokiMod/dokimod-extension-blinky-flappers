@@ -1584,6 +1584,10 @@ image yuri 1y8 = im.Composite((960, 960), (0, 0), "yuri/1l.png", (0, 0), "yuri/1
 image yuri 2y8 = im.Composite((960, 960), (0, 0), "yuri/1l.png", (0, 0), "yuri/2r.png", (0, 0), "yuri/y8.png")
 image yuri 3y8 = im.Composite((960, 960), (0, 0), "yuri/2l.png", (0, 0), "yuri/2r.png", (0, 0), "yuri/y8.png")
 
+image yuri 1hisui = im.Composite((960, 960), (0, 0), "yuri/1l.png", (0, 0), "yuri/1r.png", (0, 0), "yuri/hisui.png")
+image yuri 2hisui = im.Composite((960, 960), (0, 0), "yuri/1l.png", (0, 0), "yuri/2r.png", (0, 0), "yuri/hisui.png")
+image yuri 3hisui = im.Composite((960, 960), (0, 0), "yuri/2l.png", (0, 0), "yuri/2r.png", (0, 0), "yuri/hisui.png")
+
 image y_glitch_head:
     "images/yuri/za.png"
     0.15
